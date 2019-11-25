@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+    <head>
+        <script type="module" src="../src/nd-button.js"></script>
+    </head>
+    <body>
+        <p>Default: </p>
+        <nd-button label="primary" @click="${(e) => console.log('Primary')}"></nd-button> 
+        <p>Secondary: </p>
+        <nd-button label="secondary" type="secondary" @click="${(e) => console.log('secondary')}"></nd-button>
+        <p>Cancel: </p>
+        <nd-button label="cancel" type="cancel" @click="${(e) => console.log('cancel')}"></nd-button>
+        <p>Accept: </p>
+        <nd-button label="accept" type="accept" @click="${(e) => console.log('cancel')}"></nd-button>
+
+    </body>
+</html>
+    
