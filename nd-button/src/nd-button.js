@@ -55,16 +55,17 @@ class NdButton extends LitElement {
         }
 
         .primary:hover, primary:focus {
-            background-color: #1169d9;
+            background-color: #2179e9;
             color: #fff;
         }
+
         .secondary {
             background-color: #5a6268;
             color: #fff;
         }
 
         .secondary:hover, secondary:focus {
-            background-color: #6b7278;
+            background-color: #7b8288;
             color: #fff;
         }
 
@@ -74,7 +75,7 @@ class NdButton extends LitElement {
         }
 
         .cancel:hover, cancel:focus {
-            background-color: #da3344;
+            background-color: #ea3949;
             color: #fff;
         }
 
@@ -84,10 +85,21 @@ class NdButton extends LitElement {
         }
 
         .accept:hover, accept:focus {
-            background-color: #329939;
+            background-color: #42A949;
             color: #fff;
         }
 
+        .link {
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: none;
+            color: #005969;
+        }
+
+        .link:hover, link:focus {
+            color: #004559;
+            text-decoration: underline;
+        }
 
         .nd-button:hover, .nd-button:focus {
             backgroud-color: var(--bright-color-btn);
