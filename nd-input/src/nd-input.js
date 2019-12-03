@@ -24,6 +24,7 @@ class NdInput extends LitElement {
         this.type = InputType.TEXT;
         this.isValid = false;
         this.value = '';
+        this.regex = '.';
     }
 
     render() {
@@ -37,9 +38,29 @@ class NdInput extends LitElement {
         `;
     }
 
-    valiateInput(e) {
+    validateInput(e) {
         // TODO: Add functionality to validate input 
         // depending on the element type.
+        let isValid = false;
+        switch(this.type) {
+            case InputType.TEXT:
+                console.log('is text');
+                isValid = this.isValidText(e.key);
+                break;
+            default:
+               console.log('default'); 
+               isValid = true; 
+        }
+        console.log(`is valid: ${isValid}`);
+        return isValid;
+    }
+
+    isValidText(input) {
+        return this.isValidInput(input, /\w/);
+    }
+
+    isValidInput(input, regex) {
+        return regex.test(input);
     }
 }
 customElements.define('nd-input', NdInput);
