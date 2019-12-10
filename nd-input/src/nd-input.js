@@ -8,6 +8,15 @@ export const InputType = {
     NUM: 'num'
 };
 
+export const InputKeys = {
+    BACKSPACE: 'Backspace',
+    SHIFT: 'Shift',
+    ENTER: 'enter',
+    ALT: 'Alt',
+    CTRL: 'Control',
+    DELETE: 'Delete'
+};
+
 class NdInput extends LitElement {
     static get properties(){
         return {
@@ -25,6 +34,7 @@ class NdInput extends LitElement {
         this.isValid = false;
         this.value = '';
         this.regex = '.';
+        this.max = -1;
     }
 
     render() {
@@ -32,35 +42,63 @@ class NdInput extends LitElement {
             <div class="inputContainer">
                 <div class="label"><label>${this.label}:</label></div>
                 <div class="inputElement">
-                    <input type="${this.type}" value="${this.value}" class="nd-input" @keyup="${this.validateInput}"/>
+                    <input type="${this.type}" value="${this.value}" class="nd-input" @keydown="${this.validateInput}"
+                            maxlength="${this.max}"/>
                 </div>
             </div>
         `;
     }
 
     validateInput(e) {
-        // TODO: Add functionality to validate input 
-        // depending on the element type.
-        let isValid = false;
-        switch(this.type) {
+        console.log(e.key);
+        if(this.isNotValidInput(e)){
+            e.preventDefault();
+        }
+    }
+
+    isNotValidInput(e) {
+         switch(this.type) {
             case InputType.TEXT:
-                console.log('is text');
-                isValid = this.isValidText(e.key);
+                this.isValid = this.isWord(e.key);
                 break;
+            case InputType.PHONE:
+                this.isValid = this.isNumber(e.key);
+                this.format(e.key); 
+                break;
+            case InputType.ALPHA:
+                this.isValid = this.isWord(e.key) || this.isNumber(e.key);
+                break; 
+            case InputType.PASSWORD:
             default:
                console.log('default'); 
-               isValid = true; 
+               this.isValid = true; 
         }
-        console.log(`is valid: ${isValid}`);
-        return isValid;
+        return !this.isValid;
     }
 
-    isValidText(input) {
-        return this.isValidInput(input, /\w/);
+
+    isNumber(input) {
+        return this.inputMatchesRegex(input, /\d/);
     }
 
-    isValidInput(input, regex) {
+    isWord(input) {
+        return this.inputMatchesRegex(input, /\w/);
+    }
+
+    inputMatchesRegex(input, regex) {
         return regex.test(input);
+    }
+
+    format(input) {
+        if(!(input == InputKeys.BACKSPACE) && 
+             (this.value.length == 3 ||
+              this.value.length == 6 ) ){ 
+            this.value = this.value + "-";
+        }
+        if(input == InputKeys.BACKSPACE && this.value.length == 4) {  
+            this.value = this.value.substr(0, this.value.length-2);
+        }    
+        
     }
 }
 customElements.define('nd-input', NdInput);
