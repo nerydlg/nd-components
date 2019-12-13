@@ -1,20 +1,12 @@
 import { LitElement, html, css } from 'lit-element';
 
-export const InputType = {
+
+const InputType = {
     TEXT: 'text',
     PASSWORD: 'password',
     PHONE: 'phone',
     ALPHA: 'alpha',
     NUM: 'num'
-};
-
-export const InputKeys = {
-    BACKSPACE: 'Backspace',
-    SHIFT: 'Shift',
-    ENTER: 'enter',
-    ALT: 'Alt',
-    CTRL: 'Control',
-    DELETE: 'Delete'
 };
 
 class NdInput extends LitElement {
@@ -23,7 +15,9 @@ class NdInput extends LitElement {
             label: { type: String },
             value: { type: String },
             type: { type: String },
-            isValid: { type: Boolean }
+            isValid: { type: Boolean },
+            max: { type: Number },
+            complexType: { type: Object }
         };
     }
 
@@ -35,6 +29,7 @@ class NdInput extends LitElement {
         this.value = '';
         this.regex = '.';
         this.max = -1;
+        this.complexType = {};
     }
 
     render() {
@@ -50,27 +45,25 @@ class NdInput extends LitElement {
     }
 
     validateInput(e) {
-        console.log(e.key);
         if(this.isNotValidInput(e)){
             e.preventDefault();
         }
     }
 
     isNotValidInput(e) {
-         switch(this.type) {
+        
+        switch(this.type) {
             case InputType.TEXT:
                 this.isValid = this.isWord(e.key);
                 break;
             case InputType.PHONE:
                 this.isValid = this.isNumber(e.key);
-                this.format(e.key); 
                 break;
             case InputType.ALPHA:
                 this.isValid = this.isWord(e.key) || this.isNumber(e.key);
                 break; 
             case InputType.PASSWORD:
             default:
-               console.log('default'); 
                this.isValid = true; 
         }
         return !this.isValid;
@@ -86,19 +79,11 @@ class NdInput extends LitElement {
     }
 
     inputMatchesRegex(input, regex) {
-        return regex.test(input);
+        return regex.test(input) || this.isSpecialKey(input);
     }
 
-    format(input) {
-        if(!(input == InputKeys.BACKSPACE) && 
-             (this.value.length == 3 ||
-              this.value.length == 6 ) ){ 
-            this.value = this.value + "-";
-        }
-        if(input == InputKeys.BACKSPACE && this.value.length == 4) {  
-            this.value = this.value.substr(0, this.value.length-2);
-        }    
-        
+    isSpecialKey(input) {
+        return input.length > 1;
     }
 }
 customElements.define('nd-input', NdInput);
