@@ -5,19 +5,25 @@ const InputType = {
     TEXT: 'text',
     PASSWORD: 'password',
     PHONE: 'phone',
-    ALPHA: 'alpha',
     NUM: 'num'
 };
 
+const NdInputConstant = {
+    ACCEPT_ALL_REGEX: '.',
+    MAX_LENGTH: -1
+    
+}
+
 class NdInput extends LitElement {
+
     static get properties(){
         return {
             label: { type: String },
-            value: { type: String },
-            type: { type: String },
-            isValid: { type: Boolean },
-            max: { type: Number },
-            complexType: { type: Object }
+            value: { type: String, observe: true },
+            type: { type: String, reflect: true },
+            isValid: { type: Boolean, reflect: true },
+            max: { type: Number, reflect: true },
+            regex: { type: String}
         };
     }
 
@@ -27,9 +33,12 @@ class NdInput extends LitElement {
         this.type = InputType.TEXT;
         this.isValid = false;
         this.value = '';
-        this.regex = '.';
-        this.max = -1;
-        this.complexType = {};
+        this.regex = NdInputConstant.ACCEPT_ALL_REGEX;
+        this.max = NdInputConstant.MAX_LENGTH;
+    }
+
+    firstUpdated(changedProperties) {
+        
     }
 
     render() {
@@ -37,8 +46,8 @@ class NdInput extends LitElement {
             <div class="inputContainer">
                 <div class="label"><label>${this.label}:</label></div>
                 <div class="inputElement">
-                    <input type="${this.type}" value="${this.value}" class="nd-input" @keydown="${this.validateInput}"
-                            maxlength="${this.max}"/>
+                    <input type="${this.type}" value="${this.value}" class="nd-input nd-${this.type}"
+                            @keydown="${this.validateInput}" maxlength="${this.max}"/>
                 </div>
             </div>
         `;
@@ -59,9 +68,6 @@ class NdInput extends LitElement {
             case InputType.PHONE:
                 this.isValid = this.isNumber(e.key);
                 break;
-            case InputType.ALPHA:
-                this.isValid = this.isWord(e.key) || this.isNumber(e.key);
-                break; 
             case InputType.PASSWORD:
             default:
                this.isValid = true; 
@@ -71,7 +77,7 @@ class NdInput extends LitElement {
 
 
     isNumber(input) {
-        return this.inputMatchesRegex(input, /\d/);
+        return this.inputMatchesRegex(input, /\d/) || this.isSpecialKey(input);
     }
 
     isWord(input) {
@@ -79,7 +85,7 @@ class NdInput extends LitElement {
     }
 
     inputMatchesRegex(input, regex) {
-        return regex.test(input) || this.isSpecialKey(input);
+        return regex.test(input);
     }
 
     isSpecialKey(input) {
